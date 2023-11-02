@@ -3,5 +3,5 @@ window.addEventListener('deviceorientation', function(event) {
  var y = event.gamma; // In degree in the range of [-90,90]
  var z = event.alpha;
  var ball = document.getElementById('ball');
- ball.style.transform = 'translate(' + y + 'px, ' + x + 'px, )';
+ ball.style.transform = 'translate(' + x + 'px, ' + y + 'px, )';
 });
