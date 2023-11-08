@@ -1,36 +1,68 @@
-class DeviceOrientationBall {
-    constructor() {
-        this.x = window.innerWidth / 2;
-        this.y = window.innerHeight / 2;
-        this.size = 200;
-    }
-
-    display() {
-        const ball = document.getElementById("device-orientation-ball");
-        ball.style.left = this.x + "px";
-        ball.style.top = this.y + "px";
-    }
-
-    update(x, y) {
-        this.x = x;
-        this.y = y;
-    }
-}
-
 let ball;
+let alpha, beta, gamma; // Device orientation data
 
 function setup() {
-    createCanvas(window.innerWidth, window.innerHeight);
-    ball = new DeviceOrientationBall();
+  createCanvas(windowWidth, windowHeight);
+  ball = new Ball(width / 2, height / 2, 50);
+  ball.setSpeed(5);
 }
 
 function draw() {
-    background(0);
-    ball.display();
+  background(220);
+
+  // Display the ball
+  ball.display();
+
+  // Update ball's position based on device orientation
+  ball.update(beta, gamma);
+
+  // Check if the ball is out of the canvas
+  if (ball.isOutOfBounds()) {
+    // Vibrate the device for 100 milliseconds
+    navigator.vibrate(100);
+  }
 }
 
-function deviceMoved() {
-    const x = map(rotationY, -90, 90, 0, window.innerWidth);
-    const y = map(rotationX, -90, 90, 0, window.innerHeight);
-    ball.update(x, y);
+function deviceOrientation(event) {
+  alpha = event.alpha;
+  beta = event.beta;
+  gamma = event.gamma;
+}
+
+class Ball {
+  constructor(x, y, size) {
+    this.x = x;
+    this.y = y;
+    this.size = size;
+    this.speedX = 0;
+    this.speedY = 0;
+  }
+
+  setSpeed(speed) {
+    this.speedX = speed;
+    this.speedY = speed;
+  }
+
+  display() {
+    fill(0);
+    noStroke();
+    ellipse(this.x, this.y, this.size);
+  }
+
+  update(rotationX, rotationY) {
+    // Map the device orientation data to ball movement
+    let mappedSpeedX = map(rotationY, -90, 90, -this.speedX, this.speedX);
+    let mappedSpeedY = map(rotationX, -90, 90, -this.speedY, this.speedY);
+
+    this.x += mappedSpeedX;
+    this.y += mappedSpeedY;
+
+    // Keep the ball within the canvas boundaries
+    this.x = constrain(this.x, this.size / 2, width - this.size / 2);
+    this.y = constrain(this.y, this.size / 2, height - this.size / 2);
+  }
+
+  isOutOfBounds() {
+    return this.x < this.size / 2 || this.x > width - this.size / 2 || this.y < this.size / 2 || this.y > height - this.size / 2;
+  }
 }
