@@ -57,7 +57,7 @@ class Ball {
     this.x += mappedSpeedX;
     this.y += mappedSpeedY;
 
-    // Keep the ball within the canvas boundaries
+    // Keep the ball within the canvas screen
     this.x = constrain(this.x, this.size / 2, width - this.size / 2);
     this.y = constrain(this.y, this.size / 2, height - this.size / 2);
   }
